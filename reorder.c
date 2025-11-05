@@ -14,7 +14,10 @@ struct listnode* reorder_list(struct listnode* node) {
 static struct listnode* find_news(struct listnode** node) {
     struct listnode* follow = NULL;
     struct listnode* itr = *node;
-    while (itr->age == OLD) {
+    if(itr == NULL){
+        return NULL;
+    }
+    while (itr != NULL && itr->age == OLD) {
         follow = itr;
         itr = itr->next;
     }
@@ -41,19 +44,26 @@ static struct listnode* reverse(struct listnode* node) {
 static struct listnode* merge(struct listnode* node1, struct listnode* node2) {
     struct listnode head = {0};
     struct listnode* itr = &head;
-    while (&head) {
-        itr->next = node1;
-        node1 = node1->next;
-        itr = itr->next;
-        itr->next = node2;
-        itr = itr->next;
-        node2 = node2->next;
+    while (node1 || node2) {
+        if(node1) {
+            itr->next = node1;
+            node1 = node1->next;
+            itr = itr->next;
+        }
+
+        if(node2){
+            itr->next = node2;
+            node2 = node2->next;
+            itr = itr->next;
+        }
     }
+
     if (node1) {
         itr->next = node1;
     } else {
         itr->next = node2;
     }
+    
     return head.next;
 }
 
